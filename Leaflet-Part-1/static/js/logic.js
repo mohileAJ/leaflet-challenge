@@ -16,10 +16,52 @@ function depthToColor(depth) {
   if (depth < 70) {
     return "orange"
   }
-  if (depth < 80) {
+  if (depth < 90) {
     return "salmon"
   }
   return "tomato";
+}
+
+// Create container to hold legend.
+function createLegendContainer(map) {
+ // Create empty container to hold legend.
+ const legend = L.control({
+   position: "bottomright",
+ });
+ legend.onAdd = function() {
+   return L.DomUtil.create("div", "legend");
+ }
+ legend.addTo(map);
+ // Add formatting for legend.
+ document.querySelector(".legend").innerHTML = `
+<div style="background:white;padding:2px">
+<h3>Legend</h3>
+</div>
+ `;
+}
+// Add legend entry for color.
+function addLegendEntry(color, label) {
+ // Create empty div to hold the new entry.
+ const div = L.DomUtil.create("div", ".legend-entry");
+ document.querySelector(".legend").appendChild(div);
+ // Create content for legend.
+ div.innerHTML = `
+<div style="background:${color};padding:2px">
+     ${label}
+</div>
+ `;
+}
+// Add legend for the depth colorbars.
+function addDepthLegendToMap(map) {
+ // Create a container to hold all legend entries.
+ createLegendContainer(map);
+ // Add legend entry for each depth-color mapping used above.
+ addLegendEntry("lawngreen", "<10km");
+ addLegendEntry("greenyellow", "10-30km");
+ addLegendEntry("gold", "30-50km");
+ addLegendEntry("orange", "50-70km");
+ addLegendEntry("salmon", "70-90km");
+ addLegendEntry("tomato", "90+");
 }
 
 // Initialize the map with a base layer, but no features.
@@ -75,3 +117,4 @@ function loadAndAddEarthquakes(map) {
 
 const map = createEmptyMap();
 loadAndAddEarthquakes(map);
+addDepthLegendToMap(map)
